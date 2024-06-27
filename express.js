@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 
 
 // express app
@@ -11,6 +12,18 @@ app.set('view engine','ejs')
 
 app.listen(3000);   
 
+// app.use((req,res,next)=>{
+//     console.log('new request made');
+//     console.log('hostname :', req.hostname);
+//     console.log('path :', req.path);
+//     console.log('method :', req.method);
+//     next();
+// })
+
+app.use(morgan('dev'));
+
+//midleware static file
+app.use(express.static('public'));
 app.get('/' , (req,res)=>{
     const blogs = [
         {title:'Ram wants apple', snippet :'lorem adeir nerirt'},
@@ -19,15 +32,20 @@ app.get('/' , (req,res)=>{
     ]
 res.render('newIndex',{title:'Home',blogs})
 
-})
+});
+
+// app.use((req,res,next)=>{
+//     console.log('new request made');
+//     next();
+// });
 
 app.get('/about' , (req,res)=>{
     res.render('about',{title:'About'});
-})
+});
 
 app.get('/blogs/create' , (req,res)=>{
     res.render('create',{title:'Create Blog'});
-}) 
+}) ;
 
 //redirect
 // app.get('./about-us',(req,res)=>{
@@ -37,4 +55,5 @@ app.get('/blogs/create' , (req,res)=>{
 // 404
 app.use((req,res)=>{
     res.status(404).render('404',{title:'Error'})
-})
+});
+
