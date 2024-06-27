@@ -1,16 +1,24 @@
 const express = require('express');
 const morgan = require('morgan');
-
+const mongoose = require('mongoose')
+const Blog = require('./modules/blog')
 
 // express app
 const app = express();
 
+// connect to the mongodb
+const dbURI = 'mongodb+srv://rushikeshwayal6:Rushikeshwayal%40007@cluster0.yzfuvh9.mongodb.net/myDatabase?retryWrites=true&w=majority&appName=Cluster0';
+
+mongoose.connect(dbURI)
+.then((res)=>app.listen(3000))
+.catch((err)=>console.log(err));
 //register view engine
+
 app.set('view engine','ejs')
 
 //listen to express
 
-app.listen(3000);   
+   
 
 // app.use((req,res,next)=>{
 //     console.log('new request made');
@@ -19,18 +27,14 @@ app.listen(3000);
 //     console.log('method :', req.method);
 //     next();
 // })
-
-app.use(morgan('dev'));
-
 //midleware static file
 app.use(express.static('public'));
+app.use(morgan('dev'));
+
+
 app.get('/' , (req,res)=>{
-    const blogs = [
-        {title:'Ram wants apple', snippet :'lorem adeir nerirt'},
-        {title:'Good things around', snippet :'cozy corner café, a young woman'},
-        {title:'The day wore on', snippet :'n a world where magic was thought'},
-    ]
-res.render('newIndex',{title:'Home',blogs})
+    
+res.redirect('/blogs');
 
 });
 
@@ -42,6 +46,16 @@ res.render('newIndex',{title:'Home',blogs})
 app.get('/about' , (req,res)=>{
     res.render('about',{title:'About'});
 });
+//blog routes
+
+app.get('/blogs',(req,res)=>{
+    Blog.find().sort({createsAt:-1})
+    .then((result)=>{
+        res.render('newindex',{title:'Home',blogs:result})
+    })
+    .catch((err)=>console.log(err))
+
+})
 
 app.get('/blogs/create' , (req,res)=>{
     res.render('create',{title:'Create Blog'});
