@@ -96,6 +96,10 @@
  textarea {
      height: 120px;
  }
+ .blog-content a:hover{
+    color: coral;
+    
+ }
 
  .create-blog button {
      margin-top: 20px;
