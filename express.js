@@ -6,7 +6,7 @@ require('dotenv').config();
 
 // express app
 const app = express();
-
+module.exports = app;
 // middleware
 app.use(express.static('public'));
 app.use(morgan('dev'));
