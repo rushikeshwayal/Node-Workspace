@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const Blog = require('./modules/blog');
+require('dotenv').config();
 
 // express app
 const app = express();
