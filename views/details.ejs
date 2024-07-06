@@ -1,13 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+  <!-- Include head section, ensure path is correct -->
   <%- include('./partials/head.ejs') %>
   <body>
+    <!-- Include navigation, ensure path is correct -->
     <%- include('./partials/nav.ejs') %>
     <div class="details content">
+      <!-- Display blog details -->
       <h2><%= blog.title %></h2>
       <p><%= blog.snippet %></p>
       <p><%= blog.body %></p>
     </div>
+    <!-- Use button for deletion -->
+    <button class="delete" data-doc="<%= blog._id %>">Delete</button>
     <%- include('./partials/footer.ejs') %>
   </body>
+  <script>
+    // Select the delete button
+    const button = document.querySelector('.delete');
+
+    button.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent default link behavior
+
+      // Confirmation dialog
+      if (confirm('Are you sure you want to delete this blog post?')) {
+        const endpoint = `/blogs/${button.dataset.doc}`;
+
+        // Fetch API to send DELETE request
+        fetch(endpoint, {
+          method: 'DELETE', // Correct HTTP method case
+        })
+          .then((response) => {
+            // Handle non-JSON responses
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json(); // Expect JSON response
+          })
+          .then((result) => {
+            // Handle success
+            console.log(result);
+            alert('Blog post deleted successfully!');
+            window.location.href = result.redirect; // Redirect to blogs list
+          })
+          .catch((err) => {
+            // Handle errors gracefully
+            console.error(err);
+            alert('An error occurred: ' + err.message);
+          });
+      }
+    });
+  </script>
 </html>
